@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import GameCard from "@/components/game/GameCard";
 import Timer from "@/components/game/Timer";
 import RankingTable, { Team } from "@/components/game/RankingTable";
+import Podium from "@/components/game/Podium";
 import { Card, easyCards, mediumCards, hardCards } from "@/data/gameData";
 import { Button } from "@/components/ui/button";
 
@@ -20,6 +21,7 @@ const Play = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [showRankings, setShowRankings] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
+  const [showPodium, setShowPodium] = useState(false);
   const [cards, setCards] = useState<Card[]>([]);
 
   useEffect(() => {
@@ -117,6 +119,37 @@ const Play = () => {
     return null;
   }
 
+  if (showPodium) {
+    return (
+      <div className="min-h-screen bg-gradient-bg flex items-center justify-center p-8 relative">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="w-full max-w-5xl"
+        >
+          <Podium teams={teams} />
+          <div className="flex justify-center gap-6 mt-12">
+            <Button
+              onClick={() => setShowPodium(false)}
+              variant="outline"
+              size="lg"
+              className="px-12 py-6 text-xl"
+            >
+              View Rankings
+            </Button>
+            <Button
+              onClick={() => navigate("/")}
+              size="lg"
+              className="bg-gradient-primary text-primary-foreground hover:opacity-90 px-12 py-6 text-xl font-bold"
+            >
+              Play Again
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (gameEnded) {
     return (
       <div className="min-h-screen bg-gradient-bg flex items-center justify-center p-8">
@@ -126,10 +159,18 @@ const Play = () => {
           className="w-full max-w-5xl"
         >
           <h1 className="text-6xl font-bold text-center mb-12 bg-gradient-primary bg-clip-text text-transparent">
-            Game Over!
+            Final Rankings
           </h1>
           <RankingTable teams={teams} showAnimation={true} />
           <div className="flex justify-center gap-6 mt-12">
+            <Button
+              onClick={() => setShowPodium(true)}
+              variant="outline"
+              size="lg"
+              className="px-12 py-6 text-xl"
+            >
+              View Podium
+            </Button>
             <Button
               onClick={() => navigate("/")}
               size="lg"
@@ -194,6 +235,12 @@ const Play = () => {
               >
                 Resume
               </Button>
+              <div className="bg-secondary/50 rounded-xl p-6 text-left space-y-3">
+                <h3 className="text-lg font-bold text-foreground mb-4">Game Controls:</h3>
+                <p className="text-muted-foreground"><span className="text-primary font-bold">→</span> Correct answer</p>
+                <p className="text-muted-foreground"><span className="text-primary font-bold">Space</span> Pass/Skip</p>
+                <p className="text-muted-foreground"><span className="text-primary font-bold">P</span> Pause game</p>
+              </div>
               <Button
                 onClick={() => navigate("/")}
                 variant="outline"
@@ -227,7 +274,7 @@ const Play = () => {
             </div>
             <h3 className="text-4xl font-bold text-foreground">{currentTeam.name}</h3>
           </div>
-          <p className="text-2xl text-muted-foreground mt-4">Score this round: {roundScore}</p>
+          <p className="text-2xl text-muted-foreground mt-4">Score: {roundScore}</p>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -240,14 +287,6 @@ const Play = () => {
             />
           )}
         </AnimatePresence>
-
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="text-center mt-8 text-muted-foreground text-lg"
-        >
-          <p>Press → for correct • Space to pass • P to pause</p>
-        </motion.div>
       </div>
     </div>
   );
