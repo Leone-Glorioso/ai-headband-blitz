@@ -20,9 +20,9 @@ const Index = () => {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, type: "spring" }}
-        className="text-center mb-16"
+        className="text-center mb-24"
       >
-        <h1 className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+        <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent font-greek">
           Στο Κεφάλι το'χω
         </h1>
         <p className="text-3xl md:text-4xl text-primary font-semibold">AI Edition</p>

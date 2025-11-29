@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { teamColors, teamAvatars } from "@/data/gameData";
 import { Team } from "@/components/game/RankingTable";
 
@@ -19,13 +20,21 @@ const Setup = () => {
   const [rounds, setRounds] = useState(5);
   const [duration, setDuration] = useState(60);
 
+  const durationOptions = [10, 30, 45, 60, 120, 180, 300, 420, 600, 900, 1200];
+  
+  const formatDuration = (seconds: number) => {
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    return `${minutes}min`;
+  };
+
   const handleNumTeamsChange = (num: number) => {
     setNumTeams(num);
     const newTeams = Array.from({ length: num }, (_, i) => ({
       id: String(i + 1),
       name: teams[i]?.name || `Team ${i + 1}`,
       color: teams[i]?.color || teamColors[i % teamColors.length].value,
-      avatar: teams[i]?.avatar || teamAvatars[i % teamAvatars.length],
+      avatar: teamAvatars[Math.floor(Math.random() * teamAvatars.length)],
     }));
     setTeams(newTeams);
   };
@@ -82,7 +91,7 @@ const Setup = () => {
               className="bg-card rounded-3xl p-6 shadow-2xl"
             >
               <h3 className="text-xl font-bold text-foreground mb-4">Team {index + 1}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-sm text-muted-foreground mb-2 block">Team Name</label>
                   <Input
@@ -100,25 +109,26 @@ const Setup = () => {
                   >
                     {teamColors.map((color) => (
                       <option key={color.value} value={color.value}>
-                        {color.name}
+                        <span className="inline-flex items-center gap-2">
+                          <span 
+                            className="inline-block w-4 h-4 rounded-full" 
+                            style={{ backgroundColor: `hsl(${color.value})` }}
+                          />
+                          {color.name}
+                        </span>
                       </option>
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-2 block">Avatar</label>
-                  <select
-                    value={team.avatar}
-                    onChange={(e) => updateTeam(index, "avatar", e.target.value)}
-                    className="w-full bg-secondary text-foreground rounded-lg p-3 text-lg"
-                  >
-                    {teamAvatars.map((avatar) => (
-                      <option key={avatar} value={avatar}>
-                        {avatar}
-                      </option>
-                    ))}
-                  </select>
+              </div>
+              <div className="mt-4 flex items-center gap-4">
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg"
+                  style={{ backgroundColor: `hsl(${team.color})` }}
+                >
+                  {team.avatar}
                 </div>
+                <span className="text-muted-foreground">Avatar: {team.avatar}</span>
               </div>
             </motion.div>
           ))}
@@ -126,40 +136,39 @@ const Setup = () => {
 
         <div className="bg-card rounded-3xl p-8 mb-8 shadow-2xl">
           <h2 className="text-2xl font-bold text-foreground mb-6">Game Settings</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div>
-              <label className="text-lg text-foreground mb-4 block">Number of Rounds</label>
-              <div className="flex gap-4 flex-wrap">
-                {[2, 5, 10, 15, 20].map((num) => (
-                  <Button
-                    key={num}
-                    onClick={() => setRounds(num)}
-                    variant={rounds === num ? "default" : "outline"}
-                    className="text-lg px-6 py-4"
-                  >
-                    {num}
-                  </Button>
-                ))}
+              <label className="text-lg text-foreground mb-4 block">
+                Number of Rounds: <span className="text-primary font-bold">{rounds}</span>
+              </label>
+              <Slider
+                value={[rounds]}
+                onValueChange={(value) => setRounds(value[0])}
+                min={1}
+                max={20}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                <span>1</span>
+                <span>20</span>
               </div>
             </div>
             <div>
-              <label className="text-lg text-foreground mb-4 block">Round Duration</label>
-              <div className="flex gap-4 flex-wrap">
-                {[
-                  { label: "30s", value: 30 },
-                  { label: "1min", value: 60 },
-                  { label: "2min", value: 120 },
-                  { label: "5min", value: 300 },
-                ].map((opt) => (
-                  <Button
-                    key={opt.value}
-                    onClick={() => setDuration(opt.value)}
-                    variant={duration === opt.value ? "default" : "outline"}
-                    className="text-lg px-6 py-4"
-                  >
-                    {opt.label}
-                  </Button>
-                ))}
+              <label className="text-lg text-foreground mb-4 block">
+                Round Duration: <span className="text-primary font-bold">{formatDuration(duration)}</span>
+              </label>
+              <Slider
+                value={[durationOptions.indexOf(duration)]}
+                onValueChange={(value) => setDuration(durationOptions[value[0]])}
+                min={0}
+                max={durationOptions.length - 1}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                <span>10s</span>
+                <span>20min</span>
               </div>
             </div>
           </div>

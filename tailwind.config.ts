@@ -59,6 +59,10 @@ export default {
           DEFAULT: "hsl(var(--hard))",
           foreground: "hsl(var(--hard-foreground))",
         },
+        pass: {
+          DEFAULT: "hsl(var(--pass-button))",
+          foreground: "hsl(var(--pass-button-foreground))",
+        },
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',

@@ -39,7 +39,7 @@ const GameCard = ({ card, onCorrect, onPass }: GameCardProps) => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className={`text-6xl font-bold mb-8 ${getTextColor()}`}
+          className={`${card.difficulty === "medium" ? "text-8xl" : "text-6xl"} font-bold mb-8 ${getTextColor()}`}
         >
           {card.word}
         </motion.h2>
@@ -101,7 +101,7 @@ const GameCard = ({ card, onCorrect, onPass }: GameCardProps) => {
       >
         <button
           onClick={onPass}
-          className="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-8 py-4 rounded-2xl font-bold text-xl transition-all hover:scale-105 shadow-lg"
+          className="bg-pass hover:bg-pass/90 text-pass-foreground px-8 py-4 rounded-2xl font-bold text-xl transition-all hover:scale-105 shadow-lg"
         >
           Pass
         </button>
